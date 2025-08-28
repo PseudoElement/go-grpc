@@ -1,6 +1,6 @@
 package main
 
 func main() {
-	grpcServer := NewGRPCServer(":9000")
+	grpcServer := NewGRPCServer(":9001")
 	grpcServer.Run()
 }

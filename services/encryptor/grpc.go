@@ -4,8 +4,8 @@ import (
 	"log"
 	"net"
 
-	pb_orders "github.com/pseudoelement/go-grpc/protobuf/orders/generated"
-	"github.com/pseudoelement/go-grpc/services/orders/services"
+	pb_encryptor "github.com/pseudoelement/go-grpc/protobuf/encryptor/generated"
+	"github.com/pseudoelement/go-grpc/services/encryptor/services"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -28,12 +28,10 @@ func (s *gRPCServer) Run() error {
 
 	// init services
 	// YOU CAN INIT SERVICES FROM DIFFERENT .proto files
-	ordersSrv := services.NewGrpcOrdersService()
-	// encryptorSrv := services.NewGrpcEncryptorService()
+	encryptorSrv := services.NewGrpcEncryptorService()
 
 	// register services
-	pb_orders.RegisterOrderServiceServer(grpcServer, ordersSrv)
-	// pb_encryptor.RegisterEncryptorServer(grpcServer, encryptorSrv)
+	pb_encryptor.RegisterEncryptorServer(grpcServer, encryptorSrv)
 	// ... here register other services like routes in REST
 
 	reflection.Register(grpcServer)

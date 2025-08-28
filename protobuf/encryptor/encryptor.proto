@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option go_package = "github.com/pseudoelement/go-grpc/protobuf/encryptor/generated";
+
+service Encryptor {
+    rpc Encrypt(EncryptReq) returns (EncryptResp) {}
+    rpc DecimalToHex(DecimalToHexReq) returns (DecimalToHexResp) {}
+    rpc DecimalToHexStream(stream DecimalToHexReq) returns (stream DecimalToHexResp) {}
+}
+
+enum EncryptionType {
+    SHA_256 = 0;
+    MD_5 = 1;
+    BASE_64 = 2;
+}
+
+message EncryptReq {
+    string value = 1;
+    EncryptionType encryptionType = 2;
+}
+
+message EncryptResp {
+    string encrypted = 1;
+    string error = 2;
+    EncryptionType encryptionType = 3;
+}
+
+message DecimalToHexReq {
+    string decimalStr = 1;
+}
+
+message DecimalToHexResp {
+    string hexStr = 1;
+}
