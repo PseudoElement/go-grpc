@@ -55,12 +55,13 @@ func (s *httpServer) Run() error {
 
 		id := int32(rand.Intn(1000))
 		productID := int32(rand.Intn(1000))
+		quantity := int32(1)
 		log.Printf("id - %v, prod_id - %v\n", id, productID)
 
 		resp, err := ordersGRPCClient.CreateOrder(ctx, &pb_orders.CreateOrderRequest{
-			CustomerID: id,
-			ProductID:  productID,
-			Quantity:   1,
+			CustomerID: &id,
+			ProductID:  &productID,
+			Quantity:   &quantity,
 		})
 
 		if err != nil {
@@ -100,6 +101,71 @@ func (s *httpServer) Run() error {
 		json.NewEncoder(w).Encode(resp)
 	})
 
+	router.HandleFunc("/hex-stream", func(w http.ResponseWriter, r *http.Request) {
+		ctx, cancel := context.WithTimeout(r.Context(), time.Second*2)
+		defer cancel()
+
+		stream, err := encryptorGRPCClient.DecimalToHexStream(ctx)
+		defer stream.CloseSend()
+
+		if err != nil {
+			w.WriteHeader(400)
+			json.NewEncoder(w).Encode(err)
+			return
+		}
+
+		maxIdx := len(STRINGS_ARRAY) - 1
+		go func() {
+			for idx, decimalStr := range STRINGS_ARRAY {
+				select {
+				case <-ctx.Done():
+					return
+				default:
+					stop := false
+					if idx >= maxIdx {
+						stop = true
+					}
+					stream.Send(&pb_encryptor.DecimalToHexStreamReq{
+						DecimalStr: decimalStr,
+						Stop:       stop,
+					})
+				}
+			}
+		}()
+
+		hexes := make([]string, 0, len(STRINGS_ARRAY))
+		for {
+			select {
+			case <-ctx.Done():
+				w.WriteHeader(200)
+				json.NewEncoder(w).Encode(hexes)
+				return
+			default:
+				resp, err := stream.Recv()
+				log.Println("client receive ==>", resp)
+
+				if resp == nil {
+					w.WriteHeader(200)
+					json.NewEncoder(w).Encode(hexes)
+					return
+				}
+
+				hexes = append(hexes, resp.HexStr)
+
+				if resp.Error != nil {
+					w.WriteHeader(400)
+					json.NewEncoder(w).Encode(err)
+					return
+				}
+				if resp.Stop {
+					w.WriteHeader(200)
+					json.NewEncoder(w).Encode(hexes)
+					return
+				}
+			}
+		}
+	})
+
 	log.Println("Starting server on", s.addr)
 
 	return http.ListenAndServe(s.addr, router)
@@ -116,8 +182,13 @@ var ordersTemplate = `
 	<button onclick="createOrder()">Create order</button>
 	<button onclick="getOrders()">Get orders</button>
 	<br>
+	
 	<input type="string" />
 	<button onclick="encrypt()">Encrypt</button>
+	
+	<br>
+
+	<button onclick="hexStream()">Hex stream</button>
 
     <table border="1">
         <tr>
@@ -139,6 +210,7 @@ var ordersTemplate = `
 		const createOrder = () => fetch('http://localhost:1000/create').then(r => r.json()).then(console.log)
 		const getOrders = () => fetch('http://localhost:1000/get-orders').then(r => r.json()).then(console.log)
 		const encrypt = () => fetch('http://localhost:1000/encrypt?decimal=' + input.value).then(r => r.json()).then(console.log)
+		const hexStream = () => fetch('http://localhost:1000/hex-stream').then(r => r.json()).then(console.log)
 	</script>
 </body>
 </html>`

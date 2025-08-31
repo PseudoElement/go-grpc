@@ -4,21 +4,24 @@ import (
 	"log"
 	"net"
 
+	pb_bufferhandler "github.com/pseudoelement/go-grpc/protobuf/buffer-handler/generated"
 	pb_encryptor "github.com/pseudoelement/go-grpc/protobuf/encryptor/generated"
-	"github.com/pseudoelement/go-grpc/services/encryptor/services"
+
+	bufferhandler "github.com/pseudoelement/go-grpc/services/shared/services/buffer-handler"
+	"github.com/pseudoelement/go-grpc/services/shared/services/encryptor"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
-type gRPCServer struct {
+type SharedServer struct {
 	addr string
 }
 
-func NewGRPCServer(addr string) *gRPCServer {
-	return &gRPCServer{addr: addr}
+func NewSharedServer(addr string) *SharedServer {
+	return &SharedServer{addr: addr}
 }
 
-func (s *gRPCServer) Run() error {
+func (s *SharedServer) Run() error {
 	lis, err := net.Listen("tcp", s.addr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -26,13 +29,13 @@ func (s *gRPCServer) Run() error {
 
 	grpcServer := grpc.NewServer()
 
-	// init services
 	// YOU CAN INIT SERVICES FROM DIFFERENT .proto files
-	encryptorSrv := services.NewGrpcEncryptorService()
+	encryptorSrv := encryptor.NewGrpcEncryptorService()
+	bufferHandlerSrv := bufferhandler.NewGrpcBufferHandlerService()
 
 	// register services
 	pb_encryptor.RegisterEncryptorServer(grpcServer, encryptorSrv)
-	// ... here register other services like routes in REST
+	pb_bufferhandler.RegisterBufferHandlerServer(grpcServer, bufferHandlerSrv)
 
 	reflection.Register(grpcServer)
 

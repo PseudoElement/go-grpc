@@ -5,7 +5,7 @@ option go_package = "github.com/pseudoelement/go-grpc/protobuf/encryptor/generat
 service Encryptor {
     rpc Encrypt(EncryptReq) returns (EncryptResp) {}
     rpc DecimalToHex(DecimalToHexReq) returns (DecimalToHexResp) {}
-    rpc DecimalToHexStream(stream DecimalToHexReq) returns (stream DecimalToHexResp) {}
+    rpc DecimalToHexStream(stream DecimalToHexStreamReq) returns (stream DecimalToHexStreamResp) {}
 }
 
 enum EncryptionType {
@@ -31,4 +31,15 @@ message DecimalToHexReq {
 
 message DecimalToHexResp {
     string hexStr = 1;
+}
+
+message DecimalToHexStreamReq {
+    string decimalStr = 1;
+    bool stop = 2;
+}
+
+message DecimalToHexStreamResp {
+    string hexStr = 1;
+    optional string error = 2;
+    bool stop = 3;
 }

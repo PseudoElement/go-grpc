@@ -10,15 +10,15 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-type gRPCServer struct {
+type OrdersServer struct {
 	addr string
 }
 
-func NewGRPCServer(addr string) *gRPCServer {
-	return &gRPCServer{addr: addr}
+func NewOrdersServer(addr string) *OrdersServer {
+	return &OrdersServer{addr: addr}
 }
 
-func (s *gRPCServer) Run() error {
+func (s *OrdersServer) Run() error {
 	lis, err := net.Listen("tcp", s.addr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -27,14 +27,10 @@ func (s *gRPCServer) Run() error {
 	grpcServer := grpc.NewServer()
 
 	// init services
-	// YOU CAN INIT SERVICES FROM DIFFERENT .proto files
 	ordersSrv := services.NewGrpcOrdersService()
-	// encryptorSrv := services.NewGrpcEncryptorService()
 
 	// register services
 	pb_orders.RegisterOrderServiceServer(grpcServer, ordersSrv)
-	// pb_encryptor.RegisterEncryptorServer(grpcServer, encryptorSrv)
-	// ... here register other services like routes in REST
 
 	reflection.Register(grpcServer)
 

@@ -1,4 +1,4 @@
-package services
+package encryptor
 
 import (
 	"context"
@@ -6,12 +6,13 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
+	"log"
 	"strconv"
+	"strings"
 
 	pb_encryptor "github.com/pseudoelement/go-grpc/protobuf/encryptor/generated"
+	encryptorutils "github.com/pseudoelement/go-grpc/services/shared/services/encryptor/utils"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type EncryptorService struct {
@@ -46,16 +47,53 @@ func (s *EncryptorService) Encrypt(ctx context.Context, req *pb_encryptor.Encryp
 
 	return resp, nil
 }
+
 func (s *EncryptorService) DecimalToHex(ctx context.Context, req *pb_encryptor.DecimalToHexReq) (*pb_encryptor.DecimalToHexResp, error) {
 	println("[grpc_DecimalToHex]", s.operationsCount)
-	decimalNum, err := strconv.Atoi(req.DecimalStr) // Must be int64 for FormatInt
-	hex := strconv.FormatInt(int64(decimalNum), 16) // "ff"
+
+	hex, err := encryptorutils.DecimalToHex(req.DecimalStr)
 	s.operationsCount++
 
 	return &pb_encryptor.DecimalToHexResp{HexStr: hex}, err
 }
-func (s *EncryptorService) DecimalToHexStream(data grpc.BidiStreamingServer[pb_encryptor.DecimalToHexReq, pb_encryptor.DecimalToHexResp]) error {
-	s.operationsCount++
 
-	return status.Errorf(codes.Unimplemented, "method DecimalToHexStream not implemented")
+func (s *EncryptorService) DecimalToHexStream(stream grpc.BidiStreamingServer[pb_encryptor.DecimalToHexStreamReq, pb_encryptor.DecimalToHexStreamResp]) error {
+	for {
+		inMsg, err := stream.Recv()
+		log.Printf("[grpc_DecimalToHexStream] inMsg - %+v\n", inMsg)
+
+		if err != nil && strings.Contains(err.Error(), "DeadlineExceeded") {
+			println("[grpc_DecimalToHexStream] context done!")
+			return nil
+		}
+		if inMsg == nil && err != nil {
+			println("[grpc_DecimalToHexStream] unexpected nil message ==>", err.Error())
+			return nil
+		}
+
+		hex, err := encryptorutils.DecimalToHex(inMsg.DecimalStr)
+		if err != nil {
+			log.Printf("[grpc_DecimalToHexStream] err != nil - %v\n", err)
+			errPtr := err.Error()
+			stream.Send(&pb_encryptor.DecimalToHexStreamResp{
+				HexStr: hex,
+				Error:  &errPtr,
+				Stop:   true,
+			})
+			return nil
+		}
+
+		resp := &pb_encryptor.DecimalToHexStreamResp{
+			HexStr: hex,
+			Error:  nil,
+			Stop:   false,
+		}
+
+		log.Printf("[grpc_DecimalToHexStream] Send - %v\n", resp)
+		stream.Send(resp)
+
+		if inMsg.Stop {
+			return nil
+		}
+	}
 }

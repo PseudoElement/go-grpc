@@ -17,9 +17,9 @@ func NewGrpcOrdersService() *OrdersGrpcHandler {
 	return gRPCHandler
 }
 
-func (h *OrdersGrpcHandler) GetOrders(ctx context.Context, req *pb_orders.GetOrdersRequest) (*pb_orders.GetOrderResponse, error) {
+func (h *OrdersGrpcHandler) GetOrders(ctx context.Context, req *pb_orders.GetOrdersRequest) (*pb_orders.GetOrdersResponse, error) {
 	// o := h.ordersService.GetOrders(ctx)
-	res := &pb_orders.GetOrderResponse{
+	res := &pb_orders.GetOrdersResponse{
 		Orders: h.ordersDb,
 	}
 
@@ -31,7 +31,7 @@ func (h *OrdersGrpcHandler) GetOrders(ctx context.Context, req *pb_orders.GetOrd
 func (h *OrdersGrpcHandler) CreateOrder(ctx context.Context, req *pb_orders.CreateOrderRequest) (*pb_orders.CreateOrderResponse, error) {
 	oderID := int32(rand.Intn(1000))
 	order := &pb_orders.Order{
-		OrderID:    oderID,
+		OrderID:    &oderID,
 		CustomerID: req.CustomerID,
 		ProductID:  req.ProductID,
 		Quantity:   req.Quantity,
@@ -39,9 +39,9 @@ func (h *OrdersGrpcHandler) CreateOrder(ctx context.Context, req *pb_orders.Crea
 	h.ordersDb = append(h.ordersDb, order)
 
 	println("[grpc_CreateOrder]", order)
-
+	status := "success"
 	res := &pb_orders.CreateOrderResponse{
-		Status: "success",
+		Status: &status,
 	}
 
 	return res, nil

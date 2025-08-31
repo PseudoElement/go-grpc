@@ -23,10 +23,10 @@ const (
 
 type Order struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	OrderID       int32                  `protobuf:"varint,1,opt,name=OrderID,proto3" json:"OrderID,omitempty"`
-	CustomerID    int32                  `protobuf:"varint,2,opt,name=CustomerID,proto3" json:"CustomerID,omitempty"`
-	ProductID     int32                  `protobuf:"varint,3,opt,name=ProductID,proto3" json:"ProductID,omitempty"`
-	Quantity      int32                  `protobuf:"varint,4,opt,name=Quantity,proto3" json:"Quantity,omitempty"`
+	OrderID       *int32                 `protobuf:"varint,1,opt,name=OrderID,proto3,oneof" json:"OrderID,omitempty"`
+	CustomerID    *int32                 `protobuf:"varint,2,opt,name=CustomerID,proto3,oneof" json:"CustomerID,omitempty"`
+	ProductID     *int32                 `protobuf:"varint,3,opt,name=ProductID,proto3,oneof" json:"ProductID,omitempty"`
+	Quantity      *int32                 `protobuf:"varint,4,opt,name=Quantity,proto3,oneof" json:"Quantity,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -62,38 +62,38 @@ func (*Order) Descriptor() ([]byte, []int) {
 }
 
 func (x *Order) GetOrderID() int32 {
-	if x != nil {
-		return x.OrderID
+	if x != nil && x.OrderID != nil {
+		return *x.OrderID
 	}
 	return 0
 }
 
 func (x *Order) GetCustomerID() int32 {
-	if x != nil {
-		return x.CustomerID
+	if x != nil && x.CustomerID != nil {
+		return *x.CustomerID
 	}
 	return 0
 }
 
 func (x *Order) GetProductID() int32 {
-	if x != nil {
-		return x.ProductID
+	if x != nil && x.ProductID != nil {
+		return *x.ProductID
 	}
 	return 0
 }
 
 func (x *Order) GetQuantity() int32 {
-	if x != nil {
-		return x.Quantity
+	if x != nil && x.Quantity != nil {
+		return *x.Quantity
 	}
 	return 0
 }
 
 type CreateOrderRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	CustomerID    int32                  `protobuf:"varint,1,opt,name=customerID,proto3" json:"customerID,omitempty"`
-	ProductID     int32                  `protobuf:"varint,2,opt,name=productID,proto3" json:"productID,omitempty"`
-	Quantity      int32                  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	CustomerID    *int32                 `protobuf:"varint,1,opt,name=customerID,proto3,oneof" json:"customerID,omitempty"`
+	ProductID     *int32                 `protobuf:"varint,2,opt,name=productID,proto3,oneof" json:"productID,omitempty"`
+	Quantity      *int32                 `protobuf:"varint,3,opt,name=quantity,proto3,oneof" json:"quantity,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -129,29 +129,29 @@ func (*CreateOrderRequest) Descriptor() ([]byte, []int) {
 }
 
 func (x *CreateOrderRequest) GetCustomerID() int32 {
-	if x != nil {
-		return x.CustomerID
+	if x != nil && x.CustomerID != nil {
+		return *x.CustomerID
 	}
 	return 0
 }
 
 func (x *CreateOrderRequest) GetProductID() int32 {
-	if x != nil {
-		return x.ProductID
+	if x != nil && x.ProductID != nil {
+		return *x.ProductID
 	}
 	return 0
 }
 
 func (x *CreateOrderRequest) GetQuantity() int32 {
-	if x != nil {
-		return x.Quantity
+	if x != nil && x.Quantity != nil {
+		return *x.Quantity
 	}
 	return 0
 }
 
 type CreateOrderResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Status        string                 `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	Status        *string                `protobuf:"bytes,1,opt,name=status,proto3,oneof" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -187,15 +187,15 @@ func (*CreateOrderResponse) Descriptor() ([]byte, []int) {
 }
 
 func (x *CreateOrderResponse) GetStatus() string {
-	if x != nil {
-		return x.Status
+	if x != nil && x.Status != nil {
+		return *x.Status
 	}
 	return ""
 }
 
 type GetOrdersRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	CustomerID    int32                  `protobuf:"varint,1,opt,name=customerID,proto3" json:"customerID,omitempty"`
+	CustomerID    *int32                 `protobuf:"varint,1,opt,name=customerID,proto3,oneof" json:"customerID,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -231,33 +231,33 @@ func (*GetOrdersRequest) Descriptor() ([]byte, []int) {
 }
 
 func (x *GetOrdersRequest) GetCustomerID() int32 {
-	if x != nil {
-		return x.CustomerID
+	if x != nil && x.CustomerID != nil {
+		return *x.CustomerID
 	}
 	return 0
 }
 
-type GetOrderResponse struct {
+type GetOrdersResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Orders        []*Order               `protobuf:"bytes,1,rep,name=orders,proto3" json:"orders,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetOrderResponse) Reset() {
-	*x = GetOrderResponse{}
+func (x *GetOrdersResponse) Reset() {
+	*x = GetOrdersResponse{}
 	mi := &file_orders_orders_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetOrderResponse) String() string {
+func (x *GetOrdersResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetOrderResponse) ProtoMessage() {}
+func (*GetOrdersResponse) ProtoMessage() {}
 
-func (x *GetOrderResponse) ProtoReflect() protoreflect.Message {
+func (x *GetOrdersResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_orders_orders_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -269,12 +269,12 @@ func (x *GetOrderResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetOrderResponse.ProtoReflect.Descriptor instead.
-func (*GetOrderResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetOrdersResponse.ProtoReflect.Descriptor instead.
+func (*GetOrdersResponse) Descriptor() ([]byte, []int) {
 	return file_orders_orders_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *GetOrderResponse) GetOrders() []*Order {
+func (x *GetOrdersResponse) GetOrders() []*Order {
 	if x != nil {
 		return x.Orders
 	}
@@ -285,31 +285,43 @@ var File_orders_orders_proto protoreflect.FileDescriptor
 
 const file_orders_orders_proto_rawDesc = "" +
 	"\n" +
-	"\x13orders/orders.proto\"{\n" +
-	"\x05Order\x12\x18\n" +
-	"\aOrderID\x18\x01 \x01(\x05R\aOrderID\x12\x1e\n" +
+	"\x13orders/orders.proto\"\xc5\x01\n" +
+	"\x05Order\x12\x1d\n" +
+	"\aOrderID\x18\x01 \x01(\x05H\x00R\aOrderID\x88\x01\x01\x12#\n" +
 	"\n" +
-	"CustomerID\x18\x02 \x01(\x05R\n" +
-	"CustomerID\x12\x1c\n" +
-	"\tProductID\x18\x03 \x01(\x05R\tProductID\x12\x1a\n" +
-	"\bQuantity\x18\x04 \x01(\x05R\bQuantity\"n\n" +
-	"\x12CreateOrderRequest\x12\x1e\n" +
+	"CustomerID\x18\x02 \x01(\x05H\x01R\n" +
+	"CustomerID\x88\x01\x01\x12!\n" +
+	"\tProductID\x18\x03 \x01(\x05H\x02R\tProductID\x88\x01\x01\x12\x1f\n" +
+	"\bQuantity\x18\x04 \x01(\x05H\x03R\bQuantity\x88\x01\x01B\n" +
 	"\n" +
-	"customerID\x18\x01 \x01(\x05R\n" +
-	"customerID\x12\x1c\n" +
-	"\tproductID\x18\x02 \x01(\x05R\tproductID\x12\x1a\n" +
-	"\bquantity\x18\x03 \x01(\x05R\bquantity\"-\n" +
-	"\x13CreateOrderResponse\x12\x16\n" +
-	"\x06status\x18\x01 \x01(\tR\x06status\"2\n" +
-	"\x10GetOrdersRequest\x12\x1e\n" +
+	"\b_OrderIDB\r\n" +
+	"\v_CustomerIDB\f\n" +
 	"\n" +
-	"customerID\x18\x01 \x01(\x05R\n" +
-	"customerID\"2\n" +
-	"\x10GetOrderResponse\x12\x1e\n" +
-	"\x06orders\x18\x01 \x03(\v2\x06.OrderR\x06orders2\x7f\n" +
+	"_ProductIDB\v\n" +
+	"\t_Quantity\"\xa7\x01\n" +
+	"\x12CreateOrderRequest\x12#\n" +
+	"\n" +
+	"customerID\x18\x01 \x01(\x05H\x00R\n" +
+	"customerID\x88\x01\x01\x12!\n" +
+	"\tproductID\x18\x02 \x01(\x05H\x01R\tproductID\x88\x01\x01\x12\x1f\n" +
+	"\bquantity\x18\x03 \x01(\x05H\x02R\bquantity\x88\x01\x01B\r\n" +
+	"\v_customerIDB\f\n" +
+	"\n" +
+	"_productIDB\v\n" +
+	"\t_quantity\"=\n" +
+	"\x13CreateOrderResponse\x12\x1b\n" +
+	"\x06status\x18\x01 \x01(\tH\x00R\x06status\x88\x01\x01B\t\n" +
+	"\a_status\"F\n" +
+	"\x10GetOrdersRequest\x12#\n" +
+	"\n" +
+	"customerID\x18\x01 \x01(\x05H\x00R\n" +
+	"customerID\x88\x01\x01B\r\n" +
+	"\v_customerID\"3\n" +
+	"\x11GetOrdersResponse\x12\x1e\n" +
+	"\x06orders\x18\x01 \x03(\v2\x06.OrderR\x06orders2\x80\x01\n" +
 	"\fOrderService\x12:\n" +
-	"\vCreateOrder\x12\x13.CreateOrderRequest\x1a\x14.CreateOrderResponse\"\x00\x123\n" +
-	"\tGetOrders\x12\x11.GetOrdersRequest\x1a\x11.GetOrderResponse\"\x00B<Z:github.com/pseudoelement/go-grpc/protobuf/orders/generatedb\x06proto3"
+	"\vCreateOrder\x12\x13.CreateOrderRequest\x1a\x14.CreateOrderResponse\"\x00\x124\n" +
+	"\tGetOrders\x12\x11.GetOrdersRequest\x1a\x12.GetOrdersResponse\"\x00B<Z:github.com/pseudoelement/go-grpc/protobuf/orders/generatedb\x06proto3"
 
 var (
 	file_orders_orders_proto_rawDescOnce sync.Once
@@ -329,14 +341,14 @@ var file_orders_orders_proto_goTypes = []any{
 	(*CreateOrderRequest)(nil),  // 1: CreateOrderRequest
 	(*CreateOrderResponse)(nil), // 2: CreateOrderResponse
 	(*GetOrdersRequest)(nil),    // 3: GetOrdersRequest
-	(*GetOrderResponse)(nil),    // 4: GetOrderResponse
+	(*GetOrdersResponse)(nil),   // 4: GetOrdersResponse
 }
 var file_orders_orders_proto_depIdxs = []int32{
-	0, // 0: GetOrderResponse.orders:type_name -> Order
+	0, // 0: GetOrdersResponse.orders:type_name -> Order
 	1, // 1: OrderService.CreateOrder:input_type -> CreateOrderRequest
 	3, // 2: OrderService.GetOrders:input_type -> GetOrdersRequest
 	2, // 3: OrderService.CreateOrder:output_type -> CreateOrderResponse
-	4, // 4: OrderService.GetOrders:output_type -> GetOrderResponse
+	4, // 4: OrderService.GetOrders:output_type -> GetOrdersResponse
 	3, // [3:5] is the sub-list for method output_type
 	1, // [1:3] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -349,6 +361,10 @@ func file_orders_orders_proto_init() {
 	if File_orders_orders_proto != nil {
 		return
 	}
+	file_orders_orders_proto_msgTypes[0].OneofWrappers = []any{}
+	file_orders_orders_proto_msgTypes[1].OneofWrappers = []any{}
+	file_orders_orders_proto_msgTypes[2].OneofWrappers = []any{}
+	file_orders_orders_proto_msgTypes[3].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

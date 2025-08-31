@@ -270,6 +270,118 @@ func (x *DecimalToHexResp) GetHexStr() string {
 	return ""
 }
 
+type DecimalToHexStreamReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	DecimalStr    string                 `protobuf:"bytes,1,opt,name=decimalStr,proto3" json:"decimalStr,omitempty"`
+	Stop          bool                   `protobuf:"varint,2,opt,name=stop,proto3" json:"stop,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DecimalToHexStreamReq) Reset() {
+	*x = DecimalToHexStreamReq{}
+	mi := &file_encryptor_encryptor_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DecimalToHexStreamReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DecimalToHexStreamReq) ProtoMessage() {}
+
+func (x *DecimalToHexStreamReq) ProtoReflect() protoreflect.Message {
+	mi := &file_encryptor_encryptor_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DecimalToHexStreamReq.ProtoReflect.Descriptor instead.
+func (*DecimalToHexStreamReq) Descriptor() ([]byte, []int) {
+	return file_encryptor_encryptor_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *DecimalToHexStreamReq) GetDecimalStr() string {
+	if x != nil {
+		return x.DecimalStr
+	}
+	return ""
+}
+
+func (x *DecimalToHexStreamReq) GetStop() bool {
+	if x != nil {
+		return x.Stop
+	}
+	return false
+}
+
+type DecimalToHexStreamResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	HexStr        string                 `protobuf:"bytes,1,opt,name=hexStr,proto3" json:"hexStr,omitempty"`
+	Error         *string                `protobuf:"bytes,2,opt,name=error,proto3,oneof" json:"error,omitempty"`
+	Stop          bool                   `protobuf:"varint,3,opt,name=stop,proto3" json:"stop,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DecimalToHexStreamResp) Reset() {
+	*x = DecimalToHexStreamResp{}
+	mi := &file_encryptor_encryptor_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DecimalToHexStreamResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DecimalToHexStreamResp) ProtoMessage() {}
+
+func (x *DecimalToHexStreamResp) ProtoReflect() protoreflect.Message {
+	mi := &file_encryptor_encryptor_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DecimalToHexStreamResp.ProtoReflect.Descriptor instead.
+func (*DecimalToHexStreamResp) Descriptor() ([]byte, []int) {
+	return file_encryptor_encryptor_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *DecimalToHexStreamResp) GetHexStr() string {
+	if x != nil {
+		return x.HexStr
+	}
+	return ""
+}
+
+func (x *DecimalToHexStreamResp) GetError() string {
+	if x != nil && x.Error != nil {
+		return *x.Error
+	}
+	return ""
+}
+
+func (x *DecimalToHexStreamResp) GetStop() bool {
+	if x != nil {
+		return x.Stop
+	}
+	return false
+}
+
 var File_encryptor_encryptor_proto protoreflect.FileDescriptor
 
 const file_encryptor_encryptor_proto_rawDesc = "" +
@@ -288,15 +400,25 @@ const file_encryptor_encryptor_proto_rawDesc = "" +
 	"decimalStr\x18\x01 \x01(\tR\n" +
 	"decimalStr\"*\n" +
 	"\x10DecimalToHexResp\x12\x16\n" +
-	"\x06hexStr\x18\x01 \x01(\tR\x06hexStr*4\n" +
+	"\x06hexStr\x18\x01 \x01(\tR\x06hexStr\"K\n" +
+	"\x15DecimalToHexStreamReq\x12\x1e\n" +
+	"\n" +
+	"decimalStr\x18\x01 \x01(\tR\n" +
+	"decimalStr\x12\x12\n" +
+	"\x04stop\x18\x02 \x01(\bR\x04stop\"i\n" +
+	"\x16DecimalToHexStreamResp\x12\x16\n" +
+	"\x06hexStr\x18\x01 \x01(\tR\x06hexStr\x12\x19\n" +
+	"\x05error\x18\x02 \x01(\tH\x00R\x05error\x88\x01\x01\x12\x12\n" +
+	"\x04stop\x18\x03 \x01(\bR\x04stopB\b\n" +
+	"\x06_error*4\n" +
 	"\x0eEncryptionType\x12\v\n" +
 	"\aSHA_256\x10\x00\x12\b\n" +
 	"\x04MD_5\x10\x01\x12\v\n" +
-	"\aBASE_64\x10\x022\xab\x01\n" +
+	"\aBASE_64\x10\x022\xb7\x01\n" +
 	"\tEncryptor\x12&\n" +
 	"\aEncrypt\x12\v.EncryptReq\x1a\f.EncryptResp\"\x00\x125\n" +
-	"\fDecimalToHex\x12\x10.DecimalToHexReq\x1a\x11.DecimalToHexResp\"\x00\x12?\n" +
-	"\x12DecimalToHexStream\x12\x10.DecimalToHexReq\x1a\x11.DecimalToHexResp\"\x00(\x010\x01B?Z=github.com/pseudoelement/go-grpc/protobuf/encryptor/generatedb\x06proto3"
+	"\fDecimalToHex\x12\x10.DecimalToHexReq\x1a\x11.DecimalToHexResp\"\x00\x12K\n" +
+	"\x12DecimalToHexStream\x12\x16.DecimalToHexStreamReq\x1a\x17.DecimalToHexStreamResp\"\x00(\x010\x01B?Z=github.com/pseudoelement/go-grpc/protobuf/encryptor/generatedb\x06proto3"
 
 var (
 	file_encryptor_encryptor_proto_rawDescOnce sync.Once
@@ -311,23 +433,25 @@ func file_encryptor_encryptor_proto_rawDescGZIP() []byte {
 }
 
 var file_encryptor_encryptor_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_encryptor_encryptor_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_encryptor_encryptor_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_encryptor_encryptor_proto_goTypes = []any{
-	(EncryptionType)(0),      // 0: EncryptionType
-	(*EncryptReq)(nil),       // 1: EncryptReq
-	(*EncryptResp)(nil),      // 2: EncryptResp
-	(*DecimalToHexReq)(nil),  // 3: DecimalToHexReq
-	(*DecimalToHexResp)(nil), // 4: DecimalToHexResp
+	(EncryptionType)(0),            // 0: EncryptionType
+	(*EncryptReq)(nil),             // 1: EncryptReq
+	(*EncryptResp)(nil),            // 2: EncryptResp
+	(*DecimalToHexReq)(nil),        // 3: DecimalToHexReq
+	(*DecimalToHexResp)(nil),       // 4: DecimalToHexResp
+	(*DecimalToHexStreamReq)(nil),  // 5: DecimalToHexStreamReq
+	(*DecimalToHexStreamResp)(nil), // 6: DecimalToHexStreamResp
 }
 var file_encryptor_encryptor_proto_depIdxs = []int32{
 	0, // 0: EncryptReq.encryptionType:type_name -> EncryptionType
 	0, // 1: EncryptResp.encryptionType:type_name -> EncryptionType
 	1, // 2: Encryptor.Encrypt:input_type -> EncryptReq
 	3, // 3: Encryptor.DecimalToHex:input_type -> DecimalToHexReq
-	3, // 4: Encryptor.DecimalToHexStream:input_type -> DecimalToHexReq
+	5, // 4: Encryptor.DecimalToHexStream:input_type -> DecimalToHexStreamReq
 	2, // 5: Encryptor.Encrypt:output_type -> EncryptResp
 	4, // 6: Encryptor.DecimalToHex:output_type -> DecimalToHexResp
-	4, // 7: Encryptor.DecimalToHexStream:output_type -> DecimalToHexResp
+	6, // 7: Encryptor.DecimalToHexStream:output_type -> DecimalToHexStreamResp
 	5, // [5:8] is the sub-list for method output_type
 	2, // [2:5] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -340,13 +464,14 @@ func file_encryptor_encryptor_proto_init() {
 	if File_encryptor_encryptor_proto != nil {
 		return
 	}
+	file_encryptor_encryptor_proto_msgTypes[5].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_encryptor_encryptor_proto_rawDesc), len(file_encryptor_encryptor_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

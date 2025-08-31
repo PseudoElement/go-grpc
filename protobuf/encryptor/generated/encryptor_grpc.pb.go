@@ -30,7 +30,7 @@ const (
 type EncryptorClient interface {
 	Encrypt(ctx context.Context, in *EncryptReq, opts ...grpc.CallOption) (*EncryptResp, error)
 	DecimalToHex(ctx context.Context, in *DecimalToHexReq, opts ...grpc.CallOption) (*DecimalToHexResp, error)
-	DecimalToHexStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[DecimalToHexReq, DecimalToHexResp], error)
+	DecimalToHexStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[DecimalToHexStreamReq, DecimalToHexStreamResp], error)
 }
 
 type encryptorClient struct {
@@ -61,18 +61,18 @@ func (c *encryptorClient) DecimalToHex(ctx context.Context, in *DecimalToHexReq,
 	return out, nil
 }
 
-func (c *encryptorClient) DecimalToHexStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[DecimalToHexReq, DecimalToHexResp], error) {
+func (c *encryptorClient) DecimalToHexStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[DecimalToHexStreamReq, DecimalToHexStreamResp], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &Encryptor_ServiceDesc.Streams[0], Encryptor_DecimalToHexStream_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[DecimalToHexReq, DecimalToHexResp]{ClientStream: stream}
+	x := &grpc.GenericClientStream[DecimalToHexStreamReq, DecimalToHexStreamResp]{ClientStream: stream}
 	return x, nil
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Encryptor_DecimalToHexStreamClient = grpc.BidiStreamingClient[DecimalToHexReq, DecimalToHexResp]
+type Encryptor_DecimalToHexStreamClient = grpc.BidiStreamingClient[DecimalToHexStreamReq, DecimalToHexStreamResp]
 
 // EncryptorServer is the server API for Encryptor service.
 // All implementations must embed UnimplementedEncryptorServer
@@ -80,7 +80,7 @@ type Encryptor_DecimalToHexStreamClient = grpc.BidiStreamingClient[DecimalToHexR
 type EncryptorServer interface {
 	Encrypt(context.Context, *EncryptReq) (*EncryptResp, error)
 	DecimalToHex(context.Context, *DecimalToHexReq) (*DecimalToHexResp, error)
-	DecimalToHexStream(grpc.BidiStreamingServer[DecimalToHexReq, DecimalToHexResp]) error
+	DecimalToHexStream(grpc.BidiStreamingServer[DecimalToHexStreamReq, DecimalToHexStreamResp]) error
 	mustEmbedUnimplementedEncryptorServer()
 }
 
@@ -97,7 +97,7 @@ func (UnimplementedEncryptorServer) Encrypt(context.Context, *EncryptReq) (*Encr
 func (UnimplementedEncryptorServer) DecimalToHex(context.Context, *DecimalToHexReq) (*DecimalToHexResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DecimalToHex not implemented")
 }
-func (UnimplementedEncryptorServer) DecimalToHexStream(grpc.BidiStreamingServer[DecimalToHexReq, DecimalToHexResp]) error {
+func (UnimplementedEncryptorServer) DecimalToHexStream(grpc.BidiStreamingServer[DecimalToHexStreamReq, DecimalToHexStreamResp]) error {
 	return status.Errorf(codes.Unimplemented, "method DecimalToHexStream not implemented")
 }
 func (UnimplementedEncryptorServer) mustEmbedUnimplementedEncryptorServer() {}
@@ -158,11 +158,11 @@ func _Encryptor_DecimalToHex_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _Encryptor_DecimalToHexStream_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(EncryptorServer).DecimalToHexStream(&grpc.GenericServerStream[DecimalToHexReq, DecimalToHexResp]{ServerStream: stream})
+	return srv.(EncryptorServer).DecimalToHexStream(&grpc.GenericServerStream[DecimalToHexStreamReq, DecimalToHexStreamResp]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Encryptor_DecimalToHexStreamServer = grpc.BidiStreamingServer[DecimalToHexReq, DecimalToHexResp]
+type Encryptor_DecimalToHexStreamServer = grpc.BidiStreamingServer[DecimalToHexStreamReq, DecimalToHexStreamResp]
 
 // Encryptor_ServiceDesc is the grpc.ServiceDesc for Encryptor service.
 // It's only intended for direct use with grpc.RegisterService,

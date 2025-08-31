@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option go_package = "github.com/pseudoelement/go-grpc/protobuf/buffer-handler/generated";
+
+service BufferHandler {
+    rpc UploadBufferChunks(stream UploadBufferChunksReq) returns (UploadBufferChunksResp) {}
+    rpc DownloadBufferChunks(DownloadBufferChunksReq) returns (stream DownloadBufferChunksResp) {}
+}
+
+message UploadBufferChunksReq {
+    bytes chunk = 1;
+    bool last = 2;
+    optional string name = 3;
+}
+
+message UploadBufferChunksResp {
+    bool done = 1;
+    optional string error = 2;
+}
+
+message DownloadBufferChunksReq {
+    string name = 3;
+}
+
+message DownloadBufferChunksResp {
+    bytes chunk = 1;
+    bool last = 2;
+    optional string error = 3;
+}
