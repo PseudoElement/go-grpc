@@ -11,6 +11,7 @@ import (
 
 	pb_encryptor "github.com/pseudoelement/go-grpc/protobuf/encryptor/generated"
 	pb_orders "github.com/pseudoelement/go-grpc/protobuf/orders/generated"
+	grpcutils "github.com/pseudoelement/go-grpc/services/common/grpc"
 )
 
 type httpServer struct {
@@ -24,14 +25,14 @@ func NewHttpServer(addr string) *httpServer {
 func (s *httpServer) Run() error {
 	router := http.NewServeMux()
 
-	ordersConn := NewGRPCClient(":9000")
+	ordersConn := grpcutils.NewGRPCClient(":9000")
 	defer ordersConn.Close()
 
-	encryptorConn := NewGRPCClient(":9001")
-	defer encryptorConn.Close()
+	sharedConn := grpcutils.NewGRPCClient(":9001")
+	defer sharedConn.Close()
 
 	ordersGRPCClient := pb_orders.NewOrderServiceClient(ordersConn)
-	encryptorGRPCClient := pb_encryptor.NewEncryptorClient(encryptorConn)
+	encryptorGRPCClient := pb_encryptor.NewEncryptorClient(sharedConn)
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(r.Context(), time.Second*2)

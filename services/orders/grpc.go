@@ -11,11 +11,12 @@ import (
 )
 
 type OrdersServer struct {
-	addr string
+	addr        string
+	extCallsSrv services.OrdersExtCallsSrv
 }
 
 func NewOrdersServer(addr string) *OrdersServer {
-	return &OrdersServer{addr: addr}
+	return &OrdersServer{addr: addr, extCallsSrv: services.NewOrdersExtCallsSrv()}
 }
 
 func (s *OrdersServer) Run() error {
@@ -35,6 +36,8 @@ func (s *OrdersServer) Run() error {
 	reflection.Register(grpcServer)
 
 	log.Println("Starting gRPC server on", s.addr)
+
+	go s.extCallsSrv.UploadFileToBufferHandler()
 
 	return grpcServer.Serve(lis)
 }
