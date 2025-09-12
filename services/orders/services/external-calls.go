@@ -35,6 +35,11 @@ func (s *OrdersExtCallsSrv) UploadFileToBufferHandler() error {
 		panic("[OrdersExtCallsSrv_UploadFileToBufferHandler] Open file error: " + err.Error())
 	}
 
+	go func() {
+		<-stream.Context().Done()
+		log.Println("<-stream.Context().Done() on CLIENT")
+	}()
+
 	pwd, _ := os.Getwd()
 	path := pwd + "/services/orders/services/assets/borrow-image.jpg"
 	println("[OrdersExtCallsSrv_UploadFileToBufferHandler] file path -", path)
@@ -51,7 +56,6 @@ func (s *OrdersExtCallsSrv) UploadFileToBufferHandler() error {
 		n, err := f.Read(buf)
 		if err != nil {
 			if err == io.EOF {
-				println("file ended", n)
 				err = stream.Send(&pb_bufhandler.UploadBufferChunksReq{
 					Name:  &fileName,
 					Last:  true,

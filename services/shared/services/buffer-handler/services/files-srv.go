@@ -8,9 +8,9 @@ func NewFilesSrv() *FilesSrv {
 	return &FilesSrv{}
 }
 
-func (srv *FilesSrv) CreateAndWriteFile(bytes []byte) error {
+func (srv *FilesSrv) CreateAndWriteFile(bytes []byte, fileName string) error {
 	pwd, _ := os.Getwd()
-	path := pwd + "/services/shared/services/buffer-handler/assets/clone-image.jpg"
+	path := pwd + "/services/shared/services/buffer-handler/assets/" + fileName
 	f, err := os.Create(path)
 	if err != nil {
 		return err

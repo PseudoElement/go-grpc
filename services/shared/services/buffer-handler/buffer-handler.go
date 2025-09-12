@@ -3,6 +3,7 @@ package bufferhandler
 import (
 	"io"
 	"log"
+	"strings"
 	"sync"
 
 	pb_bufferhandler "github.com/pseudoelement/go-grpc/protobuf/buffer-handler/generated"
@@ -27,7 +28,15 @@ func (s *BufferHandlerService) UploadBufferChunks(
 	stream grpc.ClientStreamingServer[pb_bufferhandler.UploadBufferChunksReq, pb_bufferhandler.UploadBufferChunksResp],
 ) error {
 	first := true
-	for {
+	loop := true
+	go func() {
+		// called when ctx cancel() invoked on client
+		<-stream.Context().Done()
+		log.Println("<-stream.Context().Done() on SERVER")
+		loop = false
+	}()
+
+	for loop {
 		inMsg, err := stream.Recv()
 		if err == io.EOF {
 			println("[BufferHandlerService_UploadBufferChunks] io.EOF")
@@ -60,7 +69,9 @@ func (s *BufferHandlerService) UploadBufferChunks(
 			println("[BufferHandlerService_UploadBufferChunks] inMsg.Last")
 			fileBytes := s.clients[*inMsg.Name]
 			println("total file size -", len(fileBytes))
-			fileErr := s.filesSrv.CreateAndWriteFile(fileBytes)
+			splitted := strings.Split(*inMsg.Name, "/")
+			fileName := splitted[len(splitted)-1]
+			fileErr := s.filesSrv.CreateAndWriteFile(fileBytes, fileName)
 			if fileErr != nil {
 				fileErrPtr := fileErr.Error()
 				resp := &pb_bufferhandler.UploadBufferChunksResp{Done: true, Error: &fileErrPtr}
@@ -68,6 +79,8 @@ func (s *BufferHandlerService) UploadBufferChunks(
 			}
 		}
 	}
+
+	return stream.SendAndClose(&pb_bufferhandler.UploadBufferChunksResp{Done: false, Error: nil})
 }
 
 func (s *BufferHandlerService) DownloadBufferChunks(
