@@ -37,7 +37,8 @@ func (s *OrdersServer) Run() error {
 
 	log.Println("Starting gRPC server on", s.addr)
 
-	go s.extCallsSrv.UploadFileToBufferHandler()
+	// go s.extCallsSrv.UploadFileToBufferHandler()
+	go s.extCallsSrv.DownloadBytesFromBufferHandler()
 
 	return grpcServer.Serve(lis)
 }

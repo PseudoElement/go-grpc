@@ -86,3 +86,22 @@ func (s *OrdersExtCallsSrv) UploadFileToBufferHandler() error {
 
 	return nil
 }
+
+func (s *OrdersExtCallsSrv) DownloadBytesFromBufferHandler() error {
+	req := &pb_bufhandler.DownloadBufferChunksReq{Name: "nevazhno.txt"}
+	stream, err := s.bufHandlerGRPCClient.DownloadBufferChunks(context.Background(), req)
+	if err != nil {
+		return err
+	}
+	for {
+		msg, err := stream.Recv()
+		if err == io.EOF {
+			println("io.EOF stop")
+			return nil
+		}
+		if err != nil {
+			panic("[OrdersExtCallsSrv_DownloadBytesFromBufferHandler] stream.Recv() err - " + err.Error())
+		}
+		log.Println("received chunk - ", string(msg.Chunk))
+	}
+}

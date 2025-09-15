@@ -1,6 +1,7 @@
 package bufferhandler
 
 import (
+	"bytes"
 	"io"
 	"log"
 	"strings"
@@ -9,8 +10,6 @@ import (
 	pb_bufferhandler "github.com/pseudoelement/go-grpc/protobuf/buffer-handler/generated"
 	"github.com/pseudoelement/go-grpc/services/shared/services/buffer-handler/services"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type BufferHandlerService struct {
@@ -87,5 +86,29 @@ func (s *BufferHandlerService) DownloadBufferChunks(
 	req *pb_bufferhandler.DownloadBufferChunksReq,
 	stream grpc.ServerStreamingServer[pb_bufferhandler.DownloadBufferChunksResp],
 ) error {
-	return status.Errorf(codes.Unimplemented, "method DownloadBufferChunks not implemented")
+	println("start downloading file ", req.Name)
+
+	bufSize := 64
+	buf := make([]byte, bufSize)
+	reader := bytes.NewReader([]byte(LONG_TEXT))
+	for {
+		n, err := reader.Read(buf)
+		if err != nil {
+			if err == io.EOF {
+				println("io.EOF, n size - ", n)
+				return nil
+			}
+
+			println("[BufferHandlerService_DownloadBufferChunks] reader.Read() err - " + err.Error())
+			return err
+		}
+
+		err = stream.Send(&pb_bufferhandler.DownloadBufferChunksResp{Chunk: buf[:n], Last: false, Error: nil})
+		if err != nil {
+			println("[BufferHandlerService_DownloadBufferChunks] stream.Send() err - " + err.Error())
+			return err
+		}
+
+		println("Sent ", n, " bytes.")
+	}
 }
